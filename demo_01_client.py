@@ -7,7 +7,8 @@ load_dotenv()
 
 # Configuration
 vector_db_id = os.getenv("VECTOR_DB_ID", "my_demo_vector_db")
-llama_stack_url = os.getenv("LLAMA_STACK_API_URL", "http://localhost:5000")
+llama_stack_url = os.getenv("LLAMA_STACK_ENDPOINT", "http://localhost:5000")
+model_id = os.getenv("INFERENCE_MODEL")
 
 # Initialize client
 print(f"🔌 Connecting to Llama Stack API at {llama_stack_url}...")
@@ -19,7 +20,8 @@ print("🔍 Loading models...")
 models = client.models.list()
 
 # Select the first LLM and first embedding models
-model_id = next(m for m in models if m.model_type == "llm").identifier
+if not model_id:
+    model_id = next(m for m in models if m.model_type == "llm").identifier
 embedding_model = next(m for m in models if m.model_type == "embedding")
 embedding_model_id = embedding_model.identifier
 embedding_dimension = embedding_model.metadata["embedding_dimension"]
@@ -86,8 +88,9 @@ def main():
         stream=False,
     )
     
-    for log in AgentEventLogger().log(response):
-        log.print()
+    # TODO: This throws an exception for some kinds of responses!!
+    # for log in AgentEventLogger().log(response):
+    #     log.print()
     
     print("\n" + "="*50 + "\n")
     

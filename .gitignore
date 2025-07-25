@@ -136,4 +136,6 @@ dmypy.json
 .pytype/
 
 # Cython debug symbols
-cython_debug/
+cython_debug/uv.lock
+
+uv.lock
